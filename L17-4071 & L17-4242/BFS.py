@@ -22,10 +22,9 @@ class Position:
         self.parent = parent
 
 
-def dfs(visited, queue, node):
-    res = 0
+def bfs(visited, queue, node):
+    cont = 1
     if node.x == endrow and node.y == endcol:
-        res = 1
         print("Path found")
         temp = node
         while(temp.parent != None):
@@ -36,7 +35,6 @@ def dfs(visited, queue, node):
         print(" ")
         for i in range (rows):
             print(grid[i])
-        return res
     else:
             s = node
             visited.append(s)
@@ -45,33 +43,34 @@ def dfs(visited, queue, node):
                     print("The final state can't be reached there is a hurdle there")
                     cont = 0
                 else:
-                    if grid[s.x - 1][s.y] != '1' and res == 0:
+                    if grid[s.x - 1][s.y] != '1':
                         one = Position(s.x - 1, s.y, s.cost + 2, grid[s.x - 1][s.y], s)
                         if one not in visited:
                          queue.append(one)
-                         res = dfs(visited, queue,one)
             if s.y + 1 < cols :
                 if (s.x  == endrow and s.y + 1 == endcol) and grid[s.x][s.y + 1] == '1':
                     print("The final state can't be reached there is a hurdle there")
                     cont = 0
                 else:
-                    if grid[s.x][s.y + 1] != '1' and res == 0:
+                    if grid[s.x][s.y + 1] != '1':
                         two = Position(s.x, s.y + 1, s.cost + 2, grid[s.x][s.y + 1], s)
                         if two not in visited:
                          queue.append(two)
-                         res = dfs(visited, queue, two)
             if (s.x - 1 >= 0 and s.y + 1 < cols):
                 if (s.x - 1  == endrow and s.y + 1 == endcol) and grid[s.x - 1][s.y + 1] == '1':
                     print("The final state can't be reached there is a hurdle there")
                     cont = 0
                 else:
-                    if grid[s.x - 1][s.y + 1] != '1' and res == 0:
+                    if grid[s.x - 1][s.y + 1] != '1':
                         three = Position(s.x - 1, s.y + 1, s.cost + 3, grid[s.x - 1][s.y + 1], s)
                         if three not in visited:
                          queue.append(three)
-                         res = dfs(visited, queue, three)
+            if cont == 1:
+                if queue:
+                    new = queue.pop(0)
+                    bfs(visited, queue, new)
             else:
-                queue.pop()
+                print("No path found")
 for each in file:
     if i == 0:
         splitted = each.split()
@@ -97,7 +96,11 @@ if startrow < endrow:
 else:
     if(grid[startrow][startcol] != '1'):
         node = Position(startrow,startcol,0,grid[startrow][startcol],None)
-        queue.append(node)
-        dfs(visited,queue,node)
+        bfs(visited,queue,node)
+        if not queue:
+                print("No path available I am sorry")
     else:
         print("Starting position is a hurdle I am sorry")
+
+
+

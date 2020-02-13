@@ -14,8 +14,9 @@ queue = []  # Initialize a queue
 
 
 class Position:
-    def __init__(self, x, y, cost, value, parent):
+    def __init__(self, x, y, depth, cost, value, parent):
         self.x = x
+        self.depth = depth
         self.y = y
         self.cost = cost
         self.value = value
@@ -43,33 +44,30 @@ def dfs(visited, queue, node):
             if s.x - 1 >= 0:
                 if (s.x-1 == endrow and s.y == endcol) and grid[s.x - 1][s.y] == '1':
                     print("The final state can't be reached there is a hurdle there")
-                    cont = 0
                 else:
                     if grid[s.x - 1][s.y] != '1' and res == 0:
                         one = Position(s.x - 1, s.y, s.cost + 2, grid[s.x - 1][s.y], s)
                         if one not in visited:
-                         queue.append(one)
-                         res = dfs(visited, queue,one)
+                         queue.insert(0,one)
             if s.y + 1 < cols :
                 if (s.x  == endrow and s.y + 1 == endcol) and grid[s.x][s.y + 1] == '1':
                     print("The final state can't be reached there is a hurdle there")
-                    cont = 0
                 else:
                     if grid[s.x][s.y + 1] != '1' and res == 0:
                         two = Position(s.x, s.y + 1, s.cost + 2, grid[s.x][s.y + 1], s)
                         if two not in visited:
-                         queue.append(two)
-                         res = dfs(visited, queue, two)
+                         queue.insert(0,two)
             if (s.x - 1 >= 0 and s.y + 1 < cols):
                 if (s.x - 1  == endrow and s.y + 1 == endcol) and grid[s.x - 1][s.y + 1] == '1':
                     print("The final state can't be reached there is a hurdle there")
-                    cont = 0
                 else:
                     if grid[s.x - 1][s.y + 1] != '1' and res == 0:
                         three = Position(s.x - 1, s.y + 1, s.cost + 3, grid[s.x - 1][s.y + 1], s)
                         if three not in visited:
-                         queue.append(three)
-                         res = dfs(visited, queue, three)
+                         queue.insert(0,three)
+                if queue:
+                    new = queue.pop(0)
+                    dfs(visited, queue, new)
             else:
                 queue.pop()
 for each in file:
@@ -95,9 +93,12 @@ grid.pop()
 if startrow < endrow:
     print("No path found")
 else:
-    if(grid[startrow][startcol] != '1'):
-        node = Position(startrow,startcol,0,grid[startrow][startcol],None)
-        queue.append(node)
-        dfs(visited,queue,node)
+    if '1' != grid[startrow][startcol]:
+            node = Position(startrow, startcol,0 , 0, grid[startrow][startcol], None)
+            queue.append(node)
+            dfs(visited, queue, node)
     else:
         print("Starting position is a hurdle I am sorry")
+
+
+
